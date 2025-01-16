@@ -36,6 +36,19 @@ function showError($message) {
 // 处理命令行参数
 $options = getopt('t:o:h', ['type:', 'output:', 'help']);
 
+// 验证输入参数
+$validOptions = ['t', 'o', 'h', 'type', 'output', 'help'];
+$inputArgs = array_slice($argv, 1); // 获取除脚本名外的所有参数
+
+foreach ($inputArgs as $arg) {
+    $arg = ltrim($arg, '-');
+    if (!in_array($arg, $validOptions) && 
+        !preg_match('/^(type|output)=/', $arg) && 
+        strpos($arg, '=') === false) {
+        showError("无效的参数: {$arg}");
+    }
+}
+
 // 显示帮助信息
 if ($argc === 1 || isset($options['h']) || isset($options['help'])) {
     showHelp();
